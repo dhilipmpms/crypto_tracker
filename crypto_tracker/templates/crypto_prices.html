@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptocurrency Prices</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .profit {
+            color: green;
+        }
+        .loss {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align:center;">Cryptocurrency Prices</h1>
+    {% if crypto_data %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Current Price (USD)</th>
+                    <th>Entry Price (USD)</th>
+                    <th>Profit/Loss (USD)</th>
+                    <th>Profit/Loss (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for crypto in crypto_data %}
+                    {% if 'error' in crypto %}
+                        <tr>
+                            <td colspan="5">{{ crypto.error }}</td>
+                        </tr>
+                    {% else %}
+                    <tr>
+                        <td>{{ crypto.symbol }}</td>
+                        <td>${{ crypto.current_price|floatformat:5 }}</td>
+                        <td>${{ crypto.entry_price|floatformat:5 }}</td>
+                        <td class="{% if crypto.profit_loss > 0 %}profit{% else %}loss{% endif %}">
+                            ${{ crypto.profit_loss|floatformat:5 }}
+                        </td>
+                        <td class="{% if crypto.profit_loss > 0 %}profit{% else %}loss{% endif %}">
+                            {{ crypto.profit_loss_percentage|floatformat:2 }}%
+                        </td>
+                    </tr>
+                    
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="text-align:center;">No data available or an error occurred.</p>
+    {% endif %}
+</body>
+</html>
